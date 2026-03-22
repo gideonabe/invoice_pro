@@ -1,87 +1,3 @@
-// 'use client';
-
-// import { useState } from 'react';
-// import { supabase } from '@/lib/supabase';
-// import Link from 'next/link';
-
-// export default function LoginPage() {
-//   const [email, setEmail] = useState('');
-//   const [loading, setLoading] = useState(false);
-//   const [message, setMessage] = useState('');
-
-//   const handleLogin = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setMessage('');
-
-//     // This single line triggers the Magic Link email via Supabase!
-//     const { error } = await supabase.auth.signInWithOtp({
-//       email,
-//       options: {
-//         // This tells Supabase where to send the user after they click the link
-//         emailRedirectTo: `${window.location.origin}/auth/callback`,
-//       },
-//     });
-
-//     if (error) {
-//       setMessage(error.message);
-//     } else {
-//       setMessage('Check your email for the magic link!');
-//       setEmail('');
-//     }
-//     setLoading(false);
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-black flex items-center justify-center p-6 relative overflow-hidden">
-//       {/* Background Glow */}
-//       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-//       <div className="max-w-md w-full relative z-10 border border-white/10 bg-zinc-950/50 backdrop-blur-xl p-10 rounded-3xl shadow-2xl">
-//         <div className="text-center mb-10">
-//           <Link href="/" className="inline-flex items-center justify-center w-12 h-12 bg-white text-black rounded-xl font-bold text-xl mb-6">
-//             I
-//           </Link>
-//           <h1 className="text-3xl font-bold text-white tracking-tight mb-2">Welcome back</h1>
-//           <p className="text-zinc-400">Sign in to save and manage your invoices.</p>
-//         </div>
-
-//         <form onSubmit={handleLogin} className="space-y-4">
-//           <div>
-//             <label htmlFor="email" className="block text-sm font-medium text-zinc-400 mb-2">Email address</label>
-//             <input
-//               id="email"
-//               type="email"
-//               required
-//               value={email}
-//               onChange={(e) => setEmail(e.target.value)}
-//               className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
-//               placeholder="you@company.com"
-//             />
-//           </div>
-//           <button
-//             type="submit"
-//             disabled={loading}
-//             className="w-full bg-white text-black font-semibold rounded-xl px-4 py-3 hover:bg-zinc-200 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-//           >
-//             {loading ? 'Sending link...' : 'Send Magic Link'}
-//           </button>
-//         </form>
-
-//         {message && (
-//           <div className={`mt-6 p-4 rounded-xl text-sm text-center border ${message.includes('Check your email') ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-400'}`}>
-//             {message}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
 'use client';
 
 import { useState } from 'react';
@@ -102,7 +18,9 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        // emailRedirectTo: `${window.location.origin}/auth/callback`,
+        // This dynamically points to the right place whether local or live!
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
       },
     });
 
