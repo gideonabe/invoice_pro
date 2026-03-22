@@ -8,6 +8,11 @@ const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: "InvoicePro | Premium Invoicing for Creators",
   description: "Generate, share, and manage professional invoices in seconds.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   openGraph: {
     title: "InvoicePro | Premium Invoicing for Creators",
     description: "Generate, share, and manage professional invoices in seconds.",
