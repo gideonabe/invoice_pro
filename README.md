@@ -226,6 +226,37 @@ vercel
 
 ---
 
+## 🔮 Future Enhancements
+
+### Short-Term Roadmap
+- **Multi-Currency Support** — USD, EUR, GBP with automatic exchange rate conversion
+- **Recurring Invoices** — Automated billing cycles for subscription-based services
+- **Email Integration** — Direct PDF delivery via Resend or SendGrid
+- **Invoice Reminders** — Automated follow-ups for outstanding balances
+- **Expense Tracking** — Log business expenses alongside invoice revenue
+- **Client Portal** — Dedicated view for customers to access all their invoices
+- **Bulk Actions** — Select and export/delete multiple invoices simultaneously
+
+### Medium-Term Features
+- **AI-Powered Suggestions** — Smart item descriptions and pricing recommendations
+- **Financial Reports** — Monthly/quarterly revenue charts and tax summaries
+- **Template Marketplace** — Community-contributed invoice designs with ratings
+- **Custom Domains** — Branded invoice URLs (e.g., `invoices.youragency.com`)
+- **Team Collaboration** — Multi-user workspaces with role-based permissions
+- **Payment Reminders** — SMS notifications via Twilio for overdue invoices
+- **CSV/Excel Export** — Bulk data downloads for accounting software import
+
+### Long-Term Vision
+- **Stripe Integration** — Alternative payment processor with global coverage
+- **Multi-Language Support** — i18n for international creators and agencies
+- **API Access** — RESTful endpoints for third-party integrations and automation
+- **Mobile App** — React Native iOS/Android app for on-the-go invoicing
+- **Accounting Sync** — Native integrations with QuickBooks, Xero, and Wave
+- **Analytics Dashboard** — Advanced charts with client lifetime value metrics
+- **White-Label Mode** — Complete rebranding for enterprise agency deployments
+
+---
+
 ## 📄 License
 
 © 2026 InvoicePro. All rights reserved.
