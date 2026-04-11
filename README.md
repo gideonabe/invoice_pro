@@ -119,6 +119,31 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 ---
 
+## 💾 Supabase Keep-Alive System
+
+InvoicePro includes an automated keep-alive mechanism to prevent Supabase's free tier from pausing your database:
+
+### How It Works
+
+1. **`/api/keep-alive` route** — Lightweight API endpoint that pings the `profiles` table
+2. **Vercel Cron Job** — Executes the endpoint every 4 minutes (configured in `vercel.json`)
+3. **Prevents Idle Timeout** — Supabase pauses databases after ~7 days of inactivity; this ensures constant activity
+
+### Files Added
+- **`app/api/keep-alive/route.ts`** — Health check endpoint
+- **`vercel.json`** — Cron job schedule configuration
+
+### Deployment
+The cron job is automatically configured when you deploy to Vercel. No additional setup required.
+
+### Monitoring
+Check Vercel Dashboard → **Crons** tab to view execution history and verify the keep-alive system is active.
+
+### Cost
+ **Completely free** — Vercel's free tier includes unlimited cron executions (within rate limits).
+
+---
+
 ## 🗄 Database Schema
 
 ### `profiles` Table
