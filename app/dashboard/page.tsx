@@ -15,7 +15,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
 
   const cookieStore = await cookies();
 
-  // 1. REGULAR CLIENT: Used for safely reading data as the logged-in user
+  // REGULAR CLIENT: Used for safely reading data as the logged-in user
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -29,7 +29,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
     }
   );
 
-  // 2. ADMIN CLIENT: "God Mode" - Used strictly for writing secure data (like billing tiers)
+  // ADMIN CLIENT: "God Mode" - Used strictly for writing secure data (like billing tiers)
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY! // <-- Uses the secret key to bypass RLS

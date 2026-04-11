@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     const text = await request.text();
     const signature = request.headers.get('x-paystack-signature');
 
-    // 1. Verify that this request ACTUALLY came from Paystack (Security)
+    // Verify that this request ACTUALLY came from Paystack (Security)
     const hash = crypto
       .createHmac('sha512', process.env.PAYSTACK_SECRET_KEY!)
       .update(text)
@@ -24,10 +24,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
-    // 2. Parse the verified event
+    // Parse the verified event
     const event = JSON.parse(text);
 
-    // 3. Handle a Successful Payment
+    // Handle a Successful Payment
     if (event.event === 'charge.success') {
       const data = event.data;
       

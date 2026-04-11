@@ -1,36 +1,235 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InvoicePro ✽
 
-## Getting Started
+**Premium Invoicing Platform for Modern Creators & Agencies**
 
-First, run the development server:
+A slick, top-tier SaaS invoicing application built with Next.js 16, featuring beautiful templates, real-time payment tracking, Paystack integration, and a premium dark-mode executive template.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Live Site:** https://invoice-promax.vercel.app/
+
+[![Project Screenshot](https://invoice-promax.vercel.app/thumbnail.png)](https://invoice-promax.vercel.app/)
+
+---
+
+## 🚀 Features
+
+### Core Capabilities
+- **Invoice Builder** — Real-time, WYSIWYG invoice editor with customizable templates
+- **Template Vault** — Standard (free) and Executive dark-mode (premium) templates
+- **Payment Tracking** — Monitor paid, part-paid, and unpaid invoices with auto-calculated balances
+- **Paystack Integration** — Secure payment processing with webhook-based subscription upgrades
+- **Dashboard Analytics** — Revenue tracking, outstanding balances, and document metrics (Premium)
+- **WhatsApp Sharing** — Native sharing integration for instant client delivery
+- **PDF Generation** — Browser-native print-to-PDF with optimized styling
+- **Cloud Sync** — Supabase-powered authentication and real-time database storage
+
+### Premium Features (₦5,000/month)
+- Executive dark-mode template with indigo glow aesthetics
+- Full dashboard analytics and financial telemetry
+- Cloud client database and invoice history
+- Unlimited template access
+
+---
+
+## 🛠 Tech Stack
+
+| Category | Technology |
+|----------|-----------|
+| **Framework** | Next.js 16.2.1 (App Router) |
+| **Language** | TypeScript 5 |
+| **Styling** | Tailwind CSS 4 |
+| **Animations** | Framer Motion 12 |
+| **Icons** | Lucide React |
+| **Database** | Supabase (PostgreSQL) |
+| **Auth** | Supabase SSR (Magic Link OTP) |
+| **Payments** | Paystack API |
+| **Notifications** | Sonner (Toast) |
+
+---
+
+## 📁 Project Structure
+
+```
+invoice_pro/
+├── app/
+│   ├── api/
+│   │   ├── checkout/           # Paystack payment initialization
+│   │   └── webhook/paystack/   # Payment success webhooks
+│   ├── auth/callback/          # Supabase OAuth handler
+│   ├── builder/                # Invoice editor workspace
+│   ├── dashboard/              # User analytics & invoice ledger
+│   ├── login/                  # Magic link authentication
+│   ├── page.tsx                # Landing page
+│   ├── layout.tsx              # Root layout with metadata
+│   └── not-found.tsx           # 404 error page
+├── components/
+│   └── PremiumDarkTemplate.tsx # Executive dark-mode invoice
+├── lib/
+│   └── supabase.ts             # Browser Supabase client
+├── package.json
+└── tsconfig.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🏁 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- Node.js 20+ and npm
+- Supabase project ([supabase.com](https://supabase.com))
+- Paystack merchant account ([paystack.com](https://paystack.com))
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Clone repository
+cd invoice_pro
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Install dependencies
+npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Set up environment variables (see below)
+cp .env.local.example .env.local
 
-## Deploy on Vercel
+# Start development server
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Visit `http://localhost:3000` to view the application.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🔐 Environment Variables
+
+Create a `.env.local` file with the following keys:
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Paystack Configuration
+PAYSTACK_SECRET_KEY=your_paystack_secret_key
+
+# Application
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+> **Note:** For production, update `NEXT_PUBLIC_SITE_URL` to your deployed domain (e.g., `https://invoicepro.vercel.app`).
+
+---
+
+## 🗄 Database Schema
+
+### `profiles` Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key (matches Supabase auth.users.id) |
+| tier | TEXT | User subscription tier: `'free'` or `'pro'` |
+| created_at | TIMESTAMPTZ | Account creation timestamp |
+| updated_at | TIMESTAMPTZ | Last modification timestamp |
+
+### `invoices` Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | Owner (FK to profiles.id) |
+| company_id | UUID | Associated business (FK to companies.id) |
+| invoice_number | TEXT | Unique invoice identifier |
+| customer_name | TEXT | Client name |
+| customer_phone | TEXT | Client contact |
+| issue_date | DATE | Invoice date |
+| status | TEXT | `'Not paid'`, `'Part-paid'`, or `'Paid'` |
+| subtotal | NUMERIC | Total invoice amount |
+| amount_paid | NUMERIC | Payment received |
+| payment_method | TEXT | BANK, CASH, CRYPTO, POS |
+| template_used | TEXT | `'standard'` or `'premium-dark'` |
+
+### `invoice_items` Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| invoice_id | UUID | Parent invoice (FK to invoices.id) |
+| description | TEXT | Item/service name |
+| quantity | INTEGER | Item count |
+| rate | NUMERIC | Price per unit |
+
+### `companies` Table
+| Column | Type | Description |
+|--------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | Owner (FK to profiles.id) |
+| name | TEXT | Business name |
+| email | TEXT | Contact email |
+| phone | TEXT | Contact phone |
+| address | TEXT | Business address |
+| website | TEXT | Website URL |
+
+---
+
+## 💳 Payment Flow
+
+1. **User clicks "Upgrade to Premium"** → Triggers `/api/checkout`
+2. **API creates Paystack session** → Returns authorization URL
+3. **User completes payment** → Paystack processes transaction
+4. **Webhook fires** → `/api/webhook/paystack` receives `charge.success`
+5. **Server upgrades user** → Updates `profiles.tier` to `'pro'` via admin client
+6. **User redirected** → `/dashboard?payment=success` shows upgraded features
+
+---
+
+## 🎨 Design System
+
+InvoicePro follows a minimalist, high-contrast aesthetic:
+
+- **Background:** `#F4F4F2` (warm off-white)
+- **Text:** `#0F0F0F` (near-black)
+- **Borders:** `black/10` (subtle dividers)
+- **Accent:** `#A855F7` (purple for premium features)
+- **Typography:** Inter font, tight letter-spacing, tracking-widest for labels
+- **Animations:** Custom easing `[0.16, 1, 0.3, 1]` for buttery-smooth transitions
+
+---
+
+## 📜 Available Scripts
+
+```bash
+npm run dev      # Start development server with hot reload
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
+```
+
+---
+
+## 🔒 Security Notes
+
+- **Service Role Key** is only used in server-side webhook handlers (never exposed to client)
+- **Paystack signature verification** validates webhook authenticity using HMAC-SHA512
+- **Supabase RLS** (Row Level Security) protects user data isolation
+- **Magic Link Auth** eliminates password vulnerabilities
+
+---
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+```bash
+npm install -g vercel
+vercel
+```
+
+1. Push code to GitHub
+2. Connect repository in Vercel dashboard
+3. Add environment variables in Vercel settings
+4. Deploy automatically on push
+
+---
+
+## 📄 License
+
+© 2026 InvoicePro. All rights reserved.
+
+---
+
+**Built with precision. Designed for impact.** ✽

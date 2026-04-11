@@ -4,10 +4,10 @@ import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    // 1. Next.js 15 requirement: AWAIT the cookies
+    // Next.js 15 requirement: AWAIT the cookies
     const cookieStore = await cookies();
     
-    // 2. Initialize Supabase using the new getAll / setAll signature
+    //  Initialize Supabase using the new getAll / setAll signature
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -29,14 +29,14 @@ export async function POST(request: Request) {
       }
     );
 
-    // 3. Get the currently logged-in user
+    // Get the currently logged-in user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized. Please log in.' }, { status: 401 });
     }
 
-    // 4. Prepare the Paystack payload
+    // Prepare the Paystack payload
     // Paystack amounts are in KOBO (or the lowest currency unit). So ₦2,500 is 250,000 kobo.
     const amountInKobo = 5000 * 100; 
     
