@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body suppressHydrationWarning className={`${inter.className} antialiased selection:bg-black selection:text-white`}>
         {children}
         <Toaster theme="dark" position="bottom-right" richColors closeButton />
+        <Analytics />
       </body>
     </html>
   );
