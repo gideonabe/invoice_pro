@@ -104,18 +104,18 @@ Create a `.env.local` file with the following keys:
 
 ```env
 # Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
 # Paystack Configuration
 PAYSTACK_SECRET_KEY=your_paystack_secret_key
 
 # Application
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+SITE_URL=http://localhost:3000
 ```
 
-> **Note:** For production, update `NEXT_PUBLIC_SITE_URL` to your deployed domain (e.g., `https://invoicepro.vercel.app`).
+> **Note:** For production, update `SITE_URL` to your deployed domain (e.g., `https://invoicepro.vercel.app`).
 
 ---
 

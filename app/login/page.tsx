@@ -1,26 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
+
 export default function LoginPage() {
+  const supabase = typeof window === 'undefined' ? null : getSupabaseClient();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) return;
+
     setLoading(true);
     setMessage('');
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        // emailRedirectTo: `${window.location.origin}/auth/callback`,
-        // This dynamically points to the right place whether local or live!
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 

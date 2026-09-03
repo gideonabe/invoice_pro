@@ -17,8 +17,8 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
 
   // REGULAR CLIENT: Used for safely reading data as the logged-in user
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() { return cookieStore.getAll(); },
@@ -31,7 +31,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
 
   // ADMIN CLIENT: "God Mode" - Used strictly for writing secure data (like billing tiers)
   const supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY! // <-- Uses the secret key to bypass RLS
   );
 

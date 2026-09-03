@@ -4,16 +4,33 @@ import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { supabase } from '@/lib/supabase';
+// import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import PremiumDarkTemplate from '@/components/PremiumDarkTemplate';
 import { Lock } from 'lucide-react';
+
 
 const formatCurrency = (amount: number) => {
   return '₦' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
+type InvoiceItem = {
+  id: string | number;
+  name: string;
+  qty: number;
+  rate: number;
+};
+
+type InvoiceItemRow = {
+  id: string | number;
+  description: string;
+  quantity: number;
+  rate: number | string;
+};
+
 // We wrap the builder in a sub-component so we can use Suspense
 function BuilderContent() {
+  const supabase = typeof window === 'undefined' ? null : getSupabaseClient();
   const router = useRouter();
   const searchParams = useSearchParams();
   const invoiceId = searchParams.get('id'); // Get ID from URL if editing
@@ -26,7 +43,7 @@ function BuilderContent() {
   const [logo, setLogo] = useState<string | null>(null);
   const [companyDetails, setCompanyDetails] = useState({ name: '', web: '', email: '', phone: '', address: '' });
   const [invoiceDetails, setInvoiceDetails] = useState({ number: '', date: '', status: 'Not paid', customerName: 'Customer Name', customerPhone: 'Phone Number' });
-  const [items, setItems] = useState([{ id: 1, name: '', qty: 1, rate: 0 }]);
+  const [items, setItems] = useState<InvoiceItem[]>([{ id: 1, name: '', qty: 1, rate: 0 }]);
   const [paymentDetails, setPaymentDetails] = useState({ paidAmount: 0, method: 'BANK', transactionDate: '' });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -35,6 +52,8 @@ function BuilderContent() {
     setIsMounted(true);
 
     const loadData = async () => {
+      if (!supabase) return;
+
       const { data: { session } } = await supabase.auth.getSession();
       
       const num = Math.floor(10000 + Math.random() * 90000);
@@ -46,11 +65,11 @@ function BuilderContent() {
       if (session?.user) {
         setUser(session.user);
         
-        // 1. Get user Tier
+        // Get user Tier
         const { data: profile } = await supabase.from('profiles').select('tier').eq('id', session.user.id).single();
         if (profile) setTier(profile.tier);
 
-        // 2. Are we editing an existing invoice?
+        // Are we editing an existing invoice?
         if (invoiceId) {
           const { data: inv } = await supabase.from('invoices').select('*').eq('id', invoiceId).single();
           if (inv) {
@@ -60,7 +79,7 @@ function BuilderContent() {
 
             const { data: itemsData } = await supabase.from('invoice_items').select('*').eq('invoice_id', invoiceId);
             if (itemsData && itemsData.length > 0) {
-              setItems(itemsData.map(i => ({ id: i.id, name: i.description, qty: i.quantity, rate: Number(i.rate) })));
+              setItems(itemsData.map((item: InvoiceItemRow) => ({ id: item.id, name: item.description, qty: item.quantity, rate: Number(item.rate) })));
             }
 
             if (inv.company_id) {
@@ -69,7 +88,7 @@ function BuilderContent() {
             }
           }
         } else {
-          // 3. NEW INVOICE: Auto-fill brand details from their most recent company profile
+          // NEW INVOICE: Auto-fill brand details from their most recent company profile
           const { data: comp } = await supabase.from('companies').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(1).single();
           if (comp) setCompanyDetails({ name: comp.name, web: comp.website || '', email: comp.email || '', phone: comp.phone || '', address: comp.address || '' });
         }
@@ -119,8 +138,8 @@ function BuilderContent() {
   };
 
   const addItem = () => setItems([...items, { id: Date.now(), name: '', qty: 1, rate: 0 }]);
-  const removeItem = (id: number) => setItems(items.filter(item => item.id !== id));
-  const updateItem = (id: number, field: string, value: string | number) => setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
+  const removeItem = (id: string | number) => setItems(items.filter(item => item.id !== id));
+  const updateItem = (id: string | number, field: string, value: string | number) => setItems(items.map(item => item.id === id ? { ...item, [field]: value } : item));
 
   const shareInvoice = () => {
     const shareText = `Hello ${invoiceDetails.customerName},\n\nHere are the details for your recent order (${invoiceDetails.number}) with ${companyDetails.name || 'our business'}.\n\nTotal: ${formatCurrency(subtotal)}\nStatus: ${invoiceDetails.status}${invoiceDetails.status !== 'Paid' ? `\nRemaining Balance: ${formatCurrency(balance)}` : ''}\n\nThank you for doing business with us!`;
@@ -129,7 +148,7 @@ function BuilderContent() {
   };
 
   const saveInvoiceToCloud = async () => {
-    if (!user) {
+    if (!user || !supabase) {
       toast.error('Authentication Required', { description: 'Please sign in to save your invoices securely to the cloud.' });
       router.push('/login');
       return;

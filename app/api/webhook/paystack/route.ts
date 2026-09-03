@@ -2,14 +2,17 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
 
-// We use the Service Role Key here because this is a server-to-server request,
-// and it needs permission to bypass RLS to update the user's tier.
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // You'll need to get this from Supabase API settings
-);
+
 
 export async function POST(request: Request) {
+  // We use the Service Role Key here because this is a server-to-server request,
+  // and it needs permission to bypass RLS to update the user's tier.
+  const supabaseAdmin = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY! // You'll need to get this from Supabase API settings
+  ); // delays creation until an actual request is handled
+
+
   try {
     const text = await request.text();
     const signature = request.headers.get('x-paystack-signature');
